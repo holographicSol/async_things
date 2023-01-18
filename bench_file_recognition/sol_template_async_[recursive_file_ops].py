@@ -68,9 +68,7 @@ async def stat_file(file: str) -> list:
 
 
 async def call_stat(chunk: list) -> list:
-    _results = []
-    [_results.append(await stat_file(item)) for item in chunk]
-    return _results
+    return [await stat_file(item) for item in chunk]
 
 
 async def main(_chunks: list) -> list:
