@@ -4,7 +4,7 @@ This bench tries to read 1024 bytes of every file discovered during the pre-scan
 
 Simply adjust proc_max resposibly to find the best time for your specific system.
 
-my system:
+my system (MSI GL62 6QF Laptop. i7-6700HQ CPU 16GB RAM):
 proc_max = 16
 [pre-scan] time: 1.4287707000039518 seconds
 [files] 193315
