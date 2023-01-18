@@ -11,7 +11,7 @@ from aiomultiprocess import Pool
 import multiprocessing
 
 
-def scantree(path) -> str:
+def scantree(path: str) -> str:
     try:
         for entry in os.scandir(path):
             if entry.is_dir(follow_symlinks=False):
@@ -22,7 +22,7 @@ def scantree(path) -> str:
         pass
 
 
-def scan(pn: int, _d: dict, path, multiproc=False) -> list:
+def scan(pn: int, _d: dict, path: str, multiproc=False) -> list:
     fp = []
     for entry in scantree(path):
         if entry.is_file():
@@ -33,7 +33,7 @@ def scan(pn: int, _d: dict, path, multiproc=False) -> list:
         return fp
 
 
-def chunk_data(data, chunk_size) -> list:
+def chunk_data(data: list, chunk_size: int) -> list:
     _chunks = [data[x:x + chunk_size] for x in range(0, len(data), chunk_size)]
     data = []
     for _chunk in _chunks:
@@ -41,7 +41,7 @@ def chunk_data(data, chunk_size) -> list:
     return data
 
 
-def unchunk_data(data, depth=1) -> list:
+def unchunk_data(data: list, depth: int) -> list:
     new_data = data
     for i in range(0, depth):
         new_sub_data = []
@@ -52,7 +52,7 @@ def unchunk_data(data, depth=1) -> list:
     return new_data
 
 
-def read_buff(file) -> str:
+def read_buff(file: str) -> str:
     try:
         buff = magic.from_buffer(codecs.open(file, "rb").read(int(1024)))
     except:
@@ -60,21 +60,21 @@ def read_buff(file) -> str:
     return buff
 
 
-async def stat_file(file) -> list:
+async def stat_file(file: str) -> list:
     try:
         return [file, os.path.getsize(file), await asyncio.to_thread(read_buff, file)]
     except:
         pass
 
 
-async def call_stat(chunk) -> list:
+async def call_stat(chunk: list) -> list:
     _results = []
     for _ in chunk:
         _results.append(await stat_file(_))
     return _results
 
 
-async def main(_chunks) -> list:
+async def main(_chunks: list) -> list:
     async with Pool() as pool:
         _results = await pool.map(call_stat, _chunks)
     return _results
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     _d = _manager.dict()
 
     # target directory
-    target = 'C:\\'
+    target = 'D:\\Music\\'
 
     # pre-scan: (linear synchronous) requires multiproc=False in scan(). caution.
     t = time.perf_counter()
@@ -115,6 +115,6 @@ if __name__ == '__main__':
 
     # main operation: multiprocess+async
     t = time.perf_counter()
-    res = asyncio.run(main(chunks))
-    # print(res)
+    results = asyncio.run(main(chunks))
+    # print(results)
     print('[multi-process+async] time:', time.perf_counter()-t)
