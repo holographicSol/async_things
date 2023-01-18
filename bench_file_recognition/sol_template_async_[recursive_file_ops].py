@@ -82,33 +82,19 @@ if __name__ == '__main__':
     _d = _manager.dict()
 
     # target directory
-    target = 'D:\\Music\\'
+    target = 'D:\\'
 
     # pre-scan: (linear synchronous) requires multiproc=False in scan(). caution.
     t = time.perf_counter()
-    results = scan(pn=None, _d=None, path=target, multiproc=False)
-    results = unchunk_data(results, depth=1)
+    files = scan(pn=None, _d=None, path=target, multiproc=False)
+    files = unchunk_data(files, depth=1)
     print('[pre-scan] time:', time.perf_counter() - t)
 
-    # pre-scan: (multiprocess). requires multiproc=True in scan(). caution.
-    # t = time.perf_counter()
-    # paths = next(os.walk(target))[1]
-    # results = []
-    # p = []
-    # [p.append(multiprocessing.Process(target=scan, args=(pn, _d, str(target+str(paths[pn]))))) for pn in range(len(paths))]
-    # [x.start() for x in p]
-    # [x.join() for x in p]
-    # results.append(_d.values())
-    # results = unchunk_data(results, depth=3)
-    # [results.append(target + f) for f in os.listdir(target) if os.path.isfile(target + f)]
-    # print('[pre-scan] time:', time.perf_counter() - t)
-    # print('[files]', len(results))
-    # print(results)
-
     # # Setup
+    print('[files]', len(files))
     proc_max = 8
-    n_chunks = int(abs(len(results) / proc_max))+1
-    chunks = chunk_data(results, n_chunks)
+    chunks = chunk_data(files, proc_max)
+    print('[number of expected chunks]', len(chunks))
 
     # main operation: multiprocess+async
     t = time.perf_counter()
