@@ -86,8 +86,8 @@ if __name__ == '__main__':
     _manager = multiprocessing.Manager()
     _d = _manager.dict()
 
-    # Pre-scan
-    target = 'D:\\Music\\'
+    # target directory
+    target = 'D:\\'
 
     # pre-scan: (linear synchronous)
     t = time.perf_counter()
