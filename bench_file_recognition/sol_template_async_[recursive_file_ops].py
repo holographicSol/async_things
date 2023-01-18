@@ -13,7 +13,6 @@ import multiprocessing
 
 
 def scantree(path):
-    """Recursively yield DirEntry objects for given directory."""
     try:
         for entry in os.scandir(path):
             if entry.is_dir(follow_symlinks=False):
@@ -24,12 +23,15 @@ def scantree(path):
         pass
 
 
-def scan(pn, _d, path):
+def scan(pn: int, _d: dict, path, multiproc=False) -> list:
     fp = []
     for entry in scantree(path):
         if entry.is_file():
             fp.append([entry.path])
-    _d[pn] = fp
+    if multiproc is True:
+        _d[pn] = fp
+    else:
+        return fp
 
 
 def chunk_data(data, chunk_size) -> list:
@@ -85,19 +87,27 @@ if __name__ == '__main__':
     _d = _manager.dict()
 
     # Pre-scan
-    target = 'C:\\'
+    target = 'D:\\Music\\'
+
+    # pre-scan: (linear synchronous)
     t = time.perf_counter()
-    paths = next(os.walk(target))[1]
-    results = []
-    p = []
-    [p.append(multiprocessing.Process(target=scan, args=(pn, _d, target + str(paths[pn])))) for pn in range(len(paths))]
-    [x.start() for x in p]
-    [x.join() for x in p]
-    results.append(_d.values())
-    results = unchunk_data(results, depth=3)
-    [results.append(target + f) for f in os.listdir(target) if os.path.isfile(target + f)]
+    results = scan(pn=None, _d=None, path=target, multiproc=False)
+    results = unchunk_data(results, depth=1)
     print('[pre-scan] time:', time.perf_counter() - t)
-    print('[files]', len(results))
+
+    # pre-scan: (multiprocess)
+    # t = time.perf_counter()
+    # paths = next(os.walk(target))[1]
+    # results = []
+    # p = []
+    # [p.append(multiprocessing.Process(target=scan, args=(pn, _d, target + str(paths[pn])))) for pn in range(len(paths))]
+    # [x.start() for x in p]
+    # [x.join() for x in p]
+    # results.append(_d.values())
+    # results = unchunk_data(results, depth=3)
+    # [results.append(target + f) for f in os.listdir(target) if os.path.isfile(target + f)]
+    # print('[pre-scan] time:', time.perf_counter() - t)
+    # print('[files]', len(results))
     # print(results)
 
     # # Setup
@@ -108,5 +118,5 @@ if __name__ == '__main__':
     # Entry point
     t = time.perf_counter()
     res = asyncio.run(main(chunks))
-    # print(res)
+    print(res)
     print('[multi-process+async] time:', time.perf_counter()-t)
