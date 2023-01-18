@@ -7,12 +7,11 @@ import time
 import magic
 import codecs
 import asyncio
-import aiofiles
 from aiomultiprocess import Pool
 import multiprocessing
 
 
-def scantree(path):
+def scantree(path) -> str:
     try:
         for entry in os.scandir(path):
             if entry.is_dir(follow_symlinks=False):
@@ -42,7 +41,7 @@ def chunk_data(data, chunk_size) -> list:
     return data
 
 
-def unchunk_data(data, depth=1):
+def unchunk_data(data, depth=1) -> list:
     new_data = data
     for i in range(0, depth):
         new_sub_data = []
@@ -53,8 +52,7 @@ def unchunk_data(data, depth=1):
     return new_data
 
 
-def read_buff(file):
-    buff = ''
+def read_buff(file) -> str:
     try:
         buff = magic.from_buffer(codecs.open(file, "rb").read(int(1024)))
     except:
@@ -69,9 +67,9 @@ async def stat_file(file) -> list:
         pass
 
 
-async def call_stat(x) -> list:
+async def call_stat(chunk) -> list:
     _results = []
-    for _ in x:
+    for _ in chunk:
         _results.append(await stat_file(_))
     return _results
 
