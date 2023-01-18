@@ -87,20 +87,20 @@ if __name__ == '__main__':
     _d = _manager.dict()
 
     # target directory
-    target = 'D:\\'
+    target = 'C:\\'
 
-    # pre-scan: (linear synchronous)
+    # pre-scan: (linear synchronous) requires multiproc=False in scan(). caution.
     t = time.perf_counter()
     results = scan(pn=None, _d=None, path=target, multiproc=False)
     results = unchunk_data(results, depth=1)
     print('[pre-scan] time:', time.perf_counter() - t)
 
-    # pre-scan: (multiprocess)
+    # pre-scan: (multiprocess). requires multiproc=True in scan(). caution.
     # t = time.perf_counter()
     # paths = next(os.walk(target))[1]
     # results = []
     # p = []
-    # [p.append(multiprocessing.Process(target=scan, args=(pn, _d, target + str(paths[pn])))) for pn in range(len(paths))]
+    # [p.append(multiprocessing.Process(target=scan, args=(pn, _d, str(target+str(paths[pn]))))) for pn in range(len(paths))]
     # [x.start() for x in p]
     # [x.join() for x in p]
     # results.append(_d.values())
@@ -118,5 +118,5 @@ if __name__ == '__main__':
     # main operation: multiprocess+async
     t = time.perf_counter()
     res = asyncio.run(main(chunks))
-    print(res)
+    # print(res)
     print('[multi-process+async] time:', time.perf_counter()-t)
