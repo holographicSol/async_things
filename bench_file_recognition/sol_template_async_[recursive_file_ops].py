@@ -1,6 +1,6 @@
 """Written by Benjamin Jack Cullen
-Intention: My first unique multi-processed async program.
-Setup: I made this setup for advanced, extremely fast mass file operation(s).
+Intention: Bench.
+Setup: Multiprocess + Async for faster mass file operation(s).
 """
 import os
 import time
@@ -54,12 +54,12 @@ def unchunk_data(data, depth=1):
 
 
 def read_buff(file):
-    b = ''
+    buff = ''
     try:
-        b = magic.from_buffer(codecs.open(file, "rb").read(int(1024)))
+        buff = magic.from_buffer(codecs.open(file, "rb").read(int(1024)))
     except:
-        b = magic.from_buffer(open(file, "r").read(int(1024)))
-    return b
+        buff = magic.from_buffer(open(file, "r").read(int(1024)))
+    return buff
 
 
 async def stat_file(file) -> list:
@@ -70,16 +70,16 @@ async def stat_file(file) -> list:
 
 
 async def call_stat(x) -> list:
-    fsz = []
+    _results = []
     for _ in x:
-        fsz.append(await stat_file(_))
-    return fsz
+        _results.append(await stat_file(_))
+    return _results
 
 
 async def main(_chunks) -> list:
     async with Pool() as pool:
-        results = await pool.map(call_stat, _chunks)
-    return results
+        _results = await pool.map(call_stat, _chunks)
+    return _results
 
 
 if __name__ == '__main__':
