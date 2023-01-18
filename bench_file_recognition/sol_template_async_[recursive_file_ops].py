@@ -115,7 +115,7 @@ if __name__ == '__main__':
     n_chunks = int(abs(len(results) / proc_max))+1
     chunks = chunk_data(results, n_chunks)
 
-    # Entry point
+    # main operation: multiprocess+async
     t = time.perf_counter()
     res = asyncio.run(main(chunks))
     print(res)
