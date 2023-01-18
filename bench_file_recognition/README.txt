@@ -1,6 +1,6 @@
 Face melting file ops.
 
-This bench discovers files during the pre-scan. And then tries to read 1024 bytes of each file into magic for file recognition.
+This bench discovers files during the pre-scan (synchronous). And then (multiprocess+async) tries to read 1024 bytes of each file into magic for file recognition.
 
 Simply adjust proc_max resposibly to find the best time for your specific system.
 
