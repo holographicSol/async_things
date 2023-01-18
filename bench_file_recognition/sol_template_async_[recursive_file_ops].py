@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
     # # Setup
     print('[files]', len(files))
-    proc_max = 8
+    proc_max = 16
     chunks = chunk_data(files, proc_max)
     print('[number of expected chunks]', len(chunks))
 
