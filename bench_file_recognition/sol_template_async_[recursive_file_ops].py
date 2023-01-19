@@ -96,5 +96,12 @@ if __name__ == '__main__':
     # main operation: multiprocess+async
     t = time.perf_counter()
     results = asyncio.run(main(chunks))
-    # print(results)
+    print('[chunked results]', len(results))
     print('[multi-process+async] time:', time.perf_counter()-t)
+
+    # uncomment to view results.
+    # print(results)
+    # uncomment to write results.
+    # codecs.open('./results.txt', "w", encoding='utf8').close()
+    # codecs.open('./results.txt', "a", encoding='utf8').write('\n'.join(str(result) for result in results))
+    print('[fin]')
