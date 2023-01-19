@@ -10,3 +10,5 @@ proc_max = 16
 [files] 193315
 [number of expected chunks] 12083
 [multi-process+async] time: 56.86382629998843 seconds
+
+Fun fact: For best results in Windows 10, turn off Real Time Protection. (Real Time Protection consumes 50+% of CPU in many different cases).
