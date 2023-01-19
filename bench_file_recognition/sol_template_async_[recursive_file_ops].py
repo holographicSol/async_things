@@ -85,10 +85,10 @@ if __name__ == '__main__':
     t = time.perf_counter()
     files = scan(path=target)
     files = un_chunk_data(files, depth=1)
+    print('[files]', len(files))
     print('[pre-scan] time:', time.perf_counter() - t)
 
-    # # Setup
-    print('[files]', len(files))
+    # setup
     proc_max = 16
     chunks = chunk_data(files, proc_max)
     print('[number of expected chunks]', len(chunks))
