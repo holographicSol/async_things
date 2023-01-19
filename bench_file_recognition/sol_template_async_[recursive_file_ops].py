@@ -1,5 +1,5 @@
 """Written by Benjamin Jack Cullen
-Intention: Bench.
+Intention: Bench. Keep making this faster.
 Setup: Multiprocess + Async for faster mass file operation(s).
 """
 import os
