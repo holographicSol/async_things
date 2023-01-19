@@ -22,15 +22,12 @@ def scantree(path: str) -> str:
         pass
 
 
-def scan(pn: int, _d: dict, path: str, multiproc=False) -> list:
+def scan(path: str) -> list:
     fp = []
     for entry in scantree(path):
         if entry.is_file():
             fp.append([entry.path])
-    if multiproc is True:
-        _d[pn] = fp
-    else:
-        return fp
+    return fp
 
 
 def chunk_data(data: list, chunk_size: int) -> list:
@@ -84,9 +81,9 @@ if __name__ == '__main__':
     # target directory
     target = 'D:\\'
 
-    # pre-scan: (linear synchronous) requires multiproc=False in scan(). caution.
+    # pre-scan: (linear synchronous single process pre-scan to compile a file list ready for multiproc+async ops.)
     t = time.perf_counter()
-    files = scan(pn=None, _d=None, path=target, multiproc=False)
+    files = scan(path=target)
     files = unchunk_data(files, depth=1)
     print('[pre-scan] time:', time.perf_counter() - t)
 
