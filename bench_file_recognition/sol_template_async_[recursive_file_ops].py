@@ -38,7 +38,7 @@ def chunk_data(data: list, chunk_size: int) -> list:
     return data
 
 
-def unchunk_data(data: list, depth: int) -> list:
+def un_chunk_data(data: list, depth: int) -> list:
     new_data = data
     for i in range(0, depth):
         new_sub_data = []
@@ -49,7 +49,7 @@ def unchunk_data(data: list, depth: int) -> list:
     return new_data
 
 
-def read_buff(file: str) -> str:
+def file_sub_ops(file: str) -> str:
     try:
         buff = magic.from_buffer(codecs.open(file, "rb").read(int(1024)))
     except:
@@ -57,20 +57,20 @@ def read_buff(file: str) -> str:
     return buff
 
 
-async def stat_file(file: str) -> list:
+async def file_ops(file: str) -> list:
     try:
-        return [file, os.path.getsize(file), await asyncio.to_thread(read_buff, file)]
+        return [file, os.path.getsize(file), await asyncio.to_thread(file_sub_ops, file)]
     except:
         pass
 
 
-async def call_stat(chunk: list) -> list:
-    return [await stat_file(item) for item in chunk]
+async def entry_point(chunk: list) -> list:
+    return [await file_ops(item) for item in chunk]
 
 
 async def main(_chunks: list) -> list:
     async with Pool() as pool:
-        _results = await pool.map(call_stat, _chunks)
+        _results = await pool.map(entry_point, _chunks)
     return _results
 
 
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     # pre-scan: (linear synchronous single process pre-scan to compile a file list ready for multiproc+async ops.)
     t = time.perf_counter()
     files = scan(path=target)
-    files = unchunk_data(files, depth=1)
+    files = un_chunk_data(files, depth=1)
     print('[pre-scan] time:', time.perf_counter() - t)
 
     # # Setup
